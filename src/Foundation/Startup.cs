@@ -31,6 +31,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Optimizely.Labs.MarketingAutomationIntegration.ODP;
 using System.IO;
 using UNRVLD.ODP.VisitorGroups.Initilization;
@@ -51,6 +52,10 @@ namespace Foundation
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLogging(loggingBuilder =>
+            {
+                loggingBuilder.AddSeq();
+            });
             services.Configure<DataAccessOptions>(options => options.ConnectionStrings.Add(new ConnectionStringOptions
             {
                 Name = "EcfSqlConnection",
@@ -103,15 +108,16 @@ namespace Foundation
                 o.EnablePreviewFeatures = true;
                 o.IncludeEmptyContentProperties = true;
                 o.FlattenPropertyModel = false;
-                o.IncludeMasterLanguage = false; 
-                
+                o.IncludeMasterLanguage = false;
+
             });
 
             // Content Delivery API
             services.AddContentDeliveryApi()
                 .WithFriendlyUrl()
                 .WithSiteBasedCors();
-            services.AddContentDeliveryApi(OpenIDConnectOptionsDefaults.AuthenticationScheme, options => {
+            services.AddContentDeliveryApi(OpenIDConnectOptionsDefaults.AuthenticationScheme, options =>
+            {
                 options.SiteDefinitionApiEnabled = true;
             })
                .WithFriendlyUrl()
@@ -164,7 +170,7 @@ namespace Foundation
                 options.Applications.Add(application);
                 options.AllowResourceOwnerPasswordFlow = true;
             });
-            
+
             services.AddOpenIDConnectUI();
 
             services.ConfigureContentDeliveryApiSerializer(settings => settings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore);

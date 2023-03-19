@@ -1,5 +1,5 @@
 ﻿using EPiServer.Framework.Blobs;
-using EPiServer.Logging;
+using Microsoft.Extensions.Logging;
 using Mediachase.Commerce.Catalog.ImportExport;
 using System.IO;
 using System.IO.Compression;
@@ -18,7 +18,7 @@ namespace Foundation.Features.Api
         internal const string DownloadRoute = "episerverapi/catalogs/";
         private static readonly Guid _blobContainerIdentifier = Guid.Parse("119AD01E-ECD1-4781-898B-6DEC356FC8D8");
 
-        private static readonly ILogger _logger = LogManager.GetLogger(typeof(CatalogExportController));
+        private static readonly Injected<ILogger<CatalogExportController>> _logger; //LogManager.GetLogger(typeof(CatalogExportController));
 
 
         /// <summary>

@@ -1,5 +1,5 @@
 using EPiServer.Find;
-using EPiServer.Logging;
+using Microsoft.Extensions.Logging;
 using EPiServer.PlugIn;
 using EPiServer.Scheduler;
 using Foundation.Features.MyOrganization.Users;
@@ -22,7 +22,7 @@ namespace Foundation.Infrastructure.Jobs
             IsStoppable = false;
         }
 
-        public Injected<ILogger> Logger { get; set; }
+        public Injected<ILogger<UsersIndexJob>> Logger { get; set; }
         public Injected<ICustomerService> CustomerService { get; set; }
         public Injected<IClient> Find { get; set; }
 
@@ -38,7 +38,7 @@ namespace Foundation.Infrastructure.Jobs
             }
             catch (Exception ex)
             {
-                Logger.Service.Log(Level.Critical, ex.Message, ex);
+                Logger.Service.Log(LogLevel.Critical, ex.Message, ex);
                 throw new Exception("Error: " + ex.Message);
             }
         }
@@ -65,7 +65,10 @@ namespace Foundation.Infrastructure.Jobs
                 }
                 catch (Exception ex)
                 {
-                    Logger.Service.Log(Level.Error, ex.Message, ex);
+                    Logger.Service.Log(
+                        LogLevel.Error,
+                        ex,
+                        $"{ex.Message} : {Find.Service.ServiceUrl}");
                 }
 
                 var indexed = (batchNumber * _batchSize) + contacts.Count;

@@ -47,6 +47,7 @@ dotnet run --project .\src\Foundation\Foundation.csproj
 ```
 
 ### Mac
+mcr.microsoft.com/mssql/server:2019-latest doesn't support on Apple M1. to resolve it we need to change to mcr.microsoft.com/azure-sql-edge:latest but it leads to another issue the sqlcommand is not available in the container so after run the setup.sh we need to run the scripts manually.
 
 ```
 Open a Terminal window
@@ -71,6 +72,10 @@ dotnet run --project ./src/Foundation/Foundation.csproj
 ```
 
 ### View the site
+I added SEQ to the project, to view it you need to run the docker-compose.yml to start the SEQ server, in the root folder where the docker-compose.yml locate run follow command:
+```
+docker-compose up -d
+```
 
 After completing the setup steps and running the solution, access the site at <a href="http://localhost:5000">http://localhost:5000</a>.
 

@@ -7,8 +7,8 @@ add_sql_container()
     if [ $( docker ps -a | grep sql_server_optimizely | wc -l ) -gt 0 ]; then
         echo "sql_server_optimizely exists"
     else
-        sudo docker run -d --name sql_server_optimizely -h $1 -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=Episerver123!' \
-           -p 1433:1433 mcr.microsoft.com/mssql/server:2019-latest
+        docker run -d --name sql_server_optimizely -h $1 -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=Episerver123!' \
+           -p 1433:1433 mcr.microsoft.com/azure-sql-edge:latest
         docker cp ./build sql_server_optimizely:/build
     fi
 }
@@ -20,7 +20,7 @@ done
 read -p "Enter your SQL server name [localhost]: " SQLSERVER
 SQLSERVER=${SQLSERVER:-localhost}
 
-dotnet new -i EPiServer.Net.Templates --nuget-source https://nuget.optimizely.com/feed/packages.svc/ --force
+dotnet new install EPiServer.Net.Templates --nuget-source https://nuget.optimizely.com/feed/packages.svc/ --force
 dotnet tool update EPiServer.Net.Cli --global --add-source https://nuget.optimizely.com/feed/packages.svc/
 dotnet nuget add source https://nuget.optimizely.com/feed/packages.svc -n Optimizely
 dotnet dev-certs https --trust
